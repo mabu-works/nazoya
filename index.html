@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nazoya｜謎解き・暗号メーカー</title>
+<meta name="description" content="シーザー暗号・文字反転・あ↔数字変換・モールス信号（カナ）で文章を暗号化／復号できるツール。暗号文を問題カード画像にしてダウンロードもできます。">
+<meta name="theme-color" content="#4338ca">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="./icons/icon-192.png">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="site-header">
+  <h1><span class="logo">謎</span> nazoya</h1>
+  <p class="tagline">謎解き・暗号メーカー｜文章を暗号に変えて、問題カードを作ろう</p>
+</header>
+
+<main>
+  <section class="card" aria-labelledby="tool-title">
+    <h2 id="tool-title">暗号ツール</h2>
+
+    <label class="field-label" for="input-text">元の文章</label>
+    <textarea id="input-text" rows="4" placeholder="ここに文章を入力してください（ひらがな・カタカナ・英数字）"></textarea>
+
+    <div class="row">
+      <div class="grow">
+        <label class="field-label" for="method">暗号の方式</label>
+        <select id="method">
+          <option value="caesar">シーザー暗号（文字をずらす）</option>
+          <option value="reverse">文字反転（逆さ読み）</option>
+          <option value="number">あ↔数字変換（五十音順番号）</option>
+          <option value="morse">モールス信号（日本語カナ）</option>
+        </select>
+      </div>
+      <div id="shift-wrap">
+        <label class="field-label" for="shift">ずらし幅</label>
+        <input type="number" id="shift" value="3" min="1" max="45" step="1">
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button type="button" id="btn-encrypt" class="primary">暗号化する</button>
+      <button type="button" id="btn-decrypt">復号する</button>
+      <button type="button" id="btn-swap">入力と出力を入れ替え</button>
+    </div>
+
+    <label class="field-label" for="output-text">結果</label>
+    <textarea id="output-text" rows="4" readonly placeholder="ここに結果が表示されます"></textarea>
+    <div class="button-row">
+      <button type="button" id="btn-copy">結果をコピー</button>
+    </div>
+    <p id="status" class="status" role="status"></p>
+  </section>
+
+  <section class="card" aria-labelledby="card-title">
+    <h2 id="card-title">問題カードを作る</h2>
+    <p>「元の文章」を今の方式で暗号化した文を、問題カード画像（1200×630 PNG）にします。<strong>答え（元の文章）はカードに含まれません。</strong></p>
+    <label class="field-label" for="hint-text">ヒント（任意）</label>
+    <input type="text" id="hint-text" placeholder="例：ひらがなを3文字ずらしているよ">
+    <div class="button-row">
+      <button type="button" id="btn-card" class="primary">カードを生成してダウンロード</button>
+    </div>
+    <canvas id="card-canvas" width="1200" height="630" class="preview" aria-label="問題カードのプレビュー"></canvas>
+  </section>
+
+  <section class="card" aria-labelledby="howto-title">
+    <h2 id="howto-title">使い方</h2>
+    <ol class="howto">
+      <li>「元の文章」に、暗号にしたい文章を入力します。</li>
+      <li>暗号の方式を選びます。シーザー暗号の場合は「ずらし幅」も指定できます。</li>
+      <li>「暗号化する」を押すと結果が表示されます。暗号文を元に戻すときは、暗号文を入力して同じ方式で「復号する」を押してください（シーザー暗号は同じずらし幅で復号できます）。</li>
+      <li>「問題カードを作る」では、暗号文だけを載せた画像をダウンロードできます。ヒントを入れるとカードの下部に表示されます。謎解きイベントやクイズの問題づくりにどうぞ。</li>
+    </ol>
+    <h3>方式について</h3>
+    <ul class="howto">
+      <li><strong>シーザー暗号</strong>：五十音・アルファベット・数字を、指定した幅だけ後ろへずらします。</li>
+      <li><strong>文字反転</strong>：文章を後ろから逆に並べ替えます。</li>
+      <li><strong>あ↔数字変換</strong>：あ=01、い=02、う=03…と、五十音順の番号に置き換えます。カタカナも使えます。</li>
+      <li><strong>モールス信号</strong>：日本語カナをモールス符号（・と−）に変換します。濁点は「゛」の符号を後ろに付けます。</li>
+    </ul>
+    <p class="note">入力した文章はブラウザの中だけで処理され、外部に送信されることはありません。</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>nazoya — 謎解き・暗号メーカー</p>
+</footer>
+
+<script src="./app.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
