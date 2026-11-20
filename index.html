@@ -5,14 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>nazoya｜謎解き・暗号メーカー</title>
 <meta name="description" content="シーザー暗号・文字反転・あ↔数字変換・モールス信号（カナ）で文章を暗号化／復号できるツール。暗号文を問題カード画像にしてダウンロードもできます。">
-<meta name="theme-color" content="#4338ca">
+<meta name="theme-color" content="#0a0f1c">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icons/icon-192.png" type="image/png">
 <link rel="apple-touch-icon" href="./icons/icon-192.png">
+<script>
+try {
+  var savedTheme = localStorage.getItem("nazoya-theme");
+  if (savedTheme === "light" || savedTheme === "dark") {
+    document.documentElement.setAttribute("data-theme", savedTheme);
+  }
+} catch (e) { /* テーマ保存が使えない環境ではダークを既定にする */ }
+</script>
 <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-<header class="site-header">
+<nav class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="#top"><span class="logo logo-sm">謎</span> nazoya</a>
+    <span class="topbar-links">
+      <a href="#tool-title">暗号ツール</a>
+      <a href="#card-title">問題カード</a>
+      <a href="#howto-title">使い方</a>
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="テーマ切り替え">🌙</button>
+    </span>
+  </div>
+</nav>
+
+<header class="site-header" id="top">
   <h1><span class="logo">謎</span> nazoya</h1>
   <p class="tagline">謎解き・暗号メーカー｜文章を暗号に変えて、問題カードを作ろう</p>
 </header>

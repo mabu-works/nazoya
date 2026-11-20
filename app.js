@@ -254,14 +254,16 @@ function drawCard(problemText, methodName, hint) {
 
   ctx.font = '40px sans-serif';
   const lines = wrapText(ctx, problemText, W - 128).slice(0, 7);
-  let y = 224;
+  // 7行＋ヒントボックス＋フッターが重ならないよう縦方向を再配分する
+  // （問題文: 開始206・行間44で7行目の下端は約474、ヒントボックスは488〜552）
+  let y = 206;
   for (const line of lines) {
     ctx.fillText(line, 64, y);
-    y += 56;
+    y += 44;
   }
 
   if (hint) {
-    const hintY = H - 128;
+    const hintY = H - 104;
     ctx.fillStyle = '#2e2e4a';
     ctx.fillRect(64, hintY - 38, W - 128, 64);
     ctx.fillStyle = '#fbbf24';
@@ -276,11 +278,23 @@ function drawCard(problemText, methodName, hint) {
   return canvas;
 }
 
+// カードに収まる行数（カード側の上限は7行。超過分が無言で切り捨てられないよう事前に数える）
+function countCardLines(problemText) {
+  const canvas = $('card-canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.font = '40px sans-serif';
+  return wrapText(ctx, problemText, 1200 - 128).length;
+}
+
 $('btn-card').addEventListener('click', () => {
   if (!inputEl.value) { setStatus('カードにする文章を「元の文章」に入力してください。'); return; }
   const method = methodEl.value;
   // カードに載せるのは暗号文のみ（答えは含めない）
   const problem = convert(inputEl.value, method, currentShift(), false);
+  if (countCardLines(problem) > 7) {
+    setStatus('問題文がカードの上限（7行）を超えています。本文を短くしてから作成してください。');
+    return;
+  }
   const canvas = drawCard(problem, METHOD_NAMES[method], hintEl.value.trim());
   const a = document.createElement('a');
   a.download = 'nazoya-card.png';
@@ -291,3 +305,28 @@ $('btn-card').addEventListener('click', () => {
 
 // 初期プレビュー（空のカード枠）
 drawCard('ここに暗号文が表示されます', 'シーザー暗号', '');
+
+/* ===== テーマ切り替え（ダーク／ライト） ===== */
+
+(function initTheme() {
+  var root = document.documentElement;
+  if (!root || !root.getAttribute || !root.setAttribute) return;
+  function apply(theme) {
+    root.setAttribute("data-theme", theme);
+    var btn = document.getElementById("themeToggle");
+    if (btn) btn.textContent = theme === "light" ? "☀️" : "🌙";
+  }
+  var current = root.getAttribute("data-theme");
+  if (current !== "light" && current !== "dark") {
+    try { current = localStorage.getItem("nazoya-theme"); } catch (e) { current = null; }
+  }
+  apply(current === "light" ? "light" : "dark");
+  var btn = document.getElementById("themeToggle");
+  if (btn && btn.addEventListener) {
+    btn.addEventListener("click", function () {
+      var next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
+      apply(next);
+      try { localStorage.setItem("nazoya-theme", next); } catch (e) { /* 保存できなくても切り替え自体は有効 */ }
+    });
+  }
+})();

@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE_NAME = 'nazoya-v1';
+const CACHE_NAME = 'nazoya-v5';
 const PRECACHE_URLS = [
   './',
   './index.html',
