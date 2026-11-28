@@ -1,0 +1,1 @@
+{"description":"nazoya｜謎解き・暗号メーカー — シーザー暗号・文字反転・あ↔数字変換・モールス信号（カナ）の暗号化／復号と問題カード作成","name":"nazoya","private":true,"scripts":{"check":"node --check app.js && node --check js/cipher-core.js && node --check sw.js","test":"node --test test/cipher-core.test.js"},"version":"1.0.0"}
